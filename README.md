@@ -88,7 +88,7 @@ You can host it locally, or in the cloud, but it the Wemos will need to be able 
 ## Setting up Node-Red
 This is easy enough, [install Node-Red](https://nodered.org/docs/getting-started/)
 ## Deploy the example flow
-[node-red-flow.json](https://github.com/jivingjohn/BrewThermometer/blob/master/main.py) contains all you need to host a small web server that you can access from wherever you can access Node-Red.
+[node-red-flow.json](./node-red-flow.json) contains all you need to host a small web server that you can access from wherever you can access Node-Red.
 
 Once it's deployed, simply go to <your node-red installation>:<your node-red port>/BrewThermometer
 ## Endpoints
