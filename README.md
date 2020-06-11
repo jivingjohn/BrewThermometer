@@ -85,7 +85,7 @@ It shouldn't go wrong, but if it does, play around with the baud rate until you 
 # Wiring Diagram for the components
 I couldn't find a Wemos D1 Mini on [TinkerCad](https://www.tinkercad.com/), so I've drawn one to give you an idea of what you're connecting.
 I'll have to do another drawing once I've done the relays, so for now, I'd suggest hooking this up on a breadboard to test it.
-[Wiring Diagram](./wiring-diagram.jpg?raw=true)
+[Wiring Diagram](./wiring-diagram.JPG)
 
 # Adding an app to work with the temperature sensor
 I've used Node-Red to create a simple web-app that you can host to control and display the temperature.
