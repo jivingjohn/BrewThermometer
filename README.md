@@ -28,19 +28,19 @@ Simple!!
  - Strip board for final soldering
  - Some kind of box to put it in (I haven't done this yet)
  - USB Micro B connector cable
- 
+
  ## Set up a Mac so that you can build the Wemos D1 Mini
  *Sorry if you're using Windows, I've only done this on a Mac, so can't help you...*
  First thing to do is to install MicroPython. To do this, you need to be able to communicate with the D1 Mini
  ### USB Driver
  Download the USB driver for your operating system
  - [Wemos Windows/Mac USB Drivers](https://wiki.wemos.cc/downloads)
- 
- Plug the Wemos in to your computer using a USB Micro B cable (android phone charge cable). You need to work out what port it's attached to by running `ls /dev/cu.*`. 
- 
+
+ Plug the Wemos in to your computer using a USB Micro B cable (android phone charge cable). You need to work out what port it's attached to by running `ls /dev/cu.*`.
+
  The D1 Mini will show up as something like `/dev/cu.wchusbserial...` or `/dev/cu.SLAB_USBtoUART` depending on your OS / driver version
  If you don't get anything like this, it's likely you haven't got the driver installed correctly. Make sure it's installed, and start a new terminal window (or if you're paranoid, restart your computer)
- 
+
 Once you can see the Wemos, you're good to go!
 ### Python
 My Mac already has Python 3 installed. If you don't have it, you'll need to install it.
@@ -81,3 +81,21 @@ It shouldn't go wrong, but if it does, play around with the baud rate until you 
   - `ampy -p /dev/cu.wchusbserial640 -b 115200 -d 1 put main.py /main.py`
   - You need the **-b** to ensure it doesn't write too quickly
   - You need **-d 1** as otherwise it doesn't wait for MicroPython to exit interactive mode
+
+# Adding an app to work with the temperature sensor
+I've used Node-Red to create a simple web-app that you can host to control and display the temperature.
+You can host it locally, or in the cloud, but it the Wemos will need to be able to communicate with it.
+## Setting up Node-Red
+This is easy enough, [install Node-Red](https://nodered.org/docs/getting-started/)
+## Deploy the example flow
+[node-red-flow.json](./node-red-flow.json) contains all you need to host a small web server that you can access from wherever you can access Node-Red.
+
+Once it's deployed, simply go to <your node-red installation>:<your node-red port>/BrewThermometer
+## Endpoints
+- /BrewThermometer is the homepage, and will display the current temperature.
+- /BrewThermometer/Config will display the current config settings as json.
+  - If you post to this you can set the config values
+## CurrentHeatingCoolingState and other State variables
+I have a version of this that I can control from Apple HomeKit which is why these are named as they are.
+In the long term, these will be best stored in a database, but for now I've stored them as flow variables.
+If you restart node-red, you'll lose your current state. This doesn't matter too much right now as there isn't a relay component to control.
