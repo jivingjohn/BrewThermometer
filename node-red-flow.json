@@ -1,0 +1,376 @@
+[
+    {
+        "id": "3515d921.86cf86",
+        "type": "http in",
+        "z": "92ff6f4c.2ecff",
+        "name": "POST Config",
+        "url": "/BrewThermometer/Config",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 70,
+        "y": 280,
+        "wires": [
+            [
+                "ca996f3.4ed459"
+            ]
+        ]
+    },
+    {
+        "id": "a059dc14.624df",
+        "type": "http response",
+        "z": "92ff6f4c.2ecff",
+        "name": "",
+        "statusCode": "200",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 740,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "ca996f3.4ed459",
+        "type": "function",
+        "z": "92ff6f4c.2ecff",
+        "name": "Set Config",
+        "func": "var thermometer = flow.get(\"Thermometer\");\n\nthermometer.config.one_wire_pin = msg.payload.one_wire_pin || thermometer.Config.one_wire_pin;\nthermometer.Config.sample_frequency_seconds = msg.payload.sample_frequency_seconds || thermometer.Config.sample_frequency_seconds;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 350,
+        "y": 280,
+        "wires": [
+            [
+                "a059dc14.624df"
+            ]
+        ]
+    },
+    {
+        "id": "c259f516.49e898",
+        "type": "http in",
+        "z": "92ff6f4c.2ecff",
+        "name": "GET Config",
+        "url": "/BrewThermometer/Config",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 70,
+        "y": 160,
+        "wires": [
+            [
+                "3160cbd5.82fd84"
+            ]
+        ]
+    },
+    {
+        "id": "3160cbd5.82fd84",
+        "type": "template",
+        "z": "92ff6f4c.2ecff",
+        "name": "Config",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "{\n    \"one_wire_pin\" : {{ flow.Thermometer.Config.one_wire_pin }},\n    \"sample_frequency_seconds\" : {{ flow.Thermometer.Config.sample_frequency_seconds }}\n}",
+        "x": 610,
+        "y": 160,
+        "wires": [
+            [
+                "9d6cc4dd.0d9a48"
+            ]
+        ]
+    },
+    {
+        "id": "9d6cc4dd.0d9a48",
+        "type": "http response",
+        "z": "92ff6f4c.2ecff",
+        "name": "",
+        "statusCode": "200",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 740,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "c055c6ad.5329b8",
+        "type": "http in",
+        "z": "92ff6f4c.2ecff",
+        "name": "GET BrewThermometer",
+        "url": "/BrewThermometer",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 100,
+        "y": 120,
+        "wires": [
+            [
+                "31e4d97f.e4a2e6"
+            ]
+        ]
+    },
+    {
+        "id": "31e4d97f.e4a2e6",
+        "type": "template",
+        "z": "92ff6f4c.2ecff",
+        "name": "Homepage",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "<html>\n    <head><title>Brew Thermometer</title></head>\n    <body>\n        <h1>Current Temperature {{ flow.Thermometer.CurrentTemperature }} degrees Celcius</h1>\n        <h2>Current Heating Cooling State {{ flow.Thermometer.CurrentHeatingCoolingState }}</h2>\n        <h3>Target Temperature {{ flow.Thermometer.TargetTemperature }}</h3>\n        <h3>Reading Number {{ flow.Thermometer.ReadingNumber }}</h3>\n        <h5>Reading taken on {{ flow.Thermometer.TimeStamp }}</h5>\n        <hr />\n        \n        <div>\n            <form method=\"post\" action=\"/BrewThermometer/TargetTemperature\">\n                <label for=\"TargetTemperature\">Target Temperature</label>\n                <input name=\"TargetTemperature\" id=\"TargetTemperature\" type=\"number\" min=\"15\" max=\"30\" step=\"0.1\" value=\"{{ flow.Thermometer.TargetTemperature }}\" />\n                <input type=\"submit\" />\n            </form>\n        </div>\n        <div>\n            <form method=\"post\" action=\"/BrewThermometer/TargetHeatingCoolingState\">\n                <label for=\"TargetHeatingCoolingState\">Target Heating Cooling State</label>\n                <input name=\"TargetHeatingCoolingState\" id=\"TargetHeatingCoolingState\" type=\"number\" min=\"0\" max=\"1\" value=\"{{ flow.Thermometer.TargetHeatingCoolingState }}\" />\n                <input type=\"submit\" />\n            </form>\n        </div>\n    </body>\n</html>",
+        "x": 590,
+        "y": 120,
+        "wires": [
+            [
+                "4129bfa1.1dca5"
+            ]
+        ]
+    },
+    {
+        "id": "4129bfa1.1dca5",
+        "type": "http response",
+        "z": "92ff6f4c.2ecff",
+        "name": "",
+        "statusCode": "200",
+        "headers": {},
+        "x": 740,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "bb31b4cc.c8efc8",
+        "type": "http in",
+        "z": "92ff6f4c.2ecff",
+        "name": "POST CurrentTemperature",
+        "url": "/BrewThermometer/CurrentTemperature",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 110,
+        "y": 320,
+        "wires": [
+            [
+                "c0492617.702c18"
+            ]
+        ]
+    },
+    {
+        "id": "c0492617.702c18",
+        "type": "function",
+        "z": "92ff6f4c.2ecff",
+        "name": "Set CurrentTemperature",
+        "func": "var thermometer = flow.get(\"Thermometer\");\n\nthermometer.CurrentTemperature = msg.payload.CurrentTemperature || thermometer.CurrentTemperature;\nthermometer.ReadingNumber = msg.payload.ReadingNumber || thermometer.ReadingNumber;\nthermometer.TimeStamp = new Date()\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 390,
+        "y": 320,
+        "wires": [
+            [
+                "9542d173.36191",
+                "7947e357.70b65c"
+            ]
+        ]
+    },
+    {
+        "id": "9542d173.36191",
+        "type": "http response",
+        "z": "92ff6f4c.2ecff",
+        "name": "",
+        "statusCode": "200",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 740,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "96e48e0.2663b7",
+        "type": "http in",
+        "z": "92ff6f4c.2ecff",
+        "name": "POST TargetTemperature",
+        "url": "/BrewThermometer/TargetTemperature",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 110,
+        "y": 360,
+        "wires": [
+            [
+                "15bd6803.e97588"
+            ]
+        ]
+    },
+    {
+        "id": "15bd6803.e97588",
+        "type": "function",
+        "z": "92ff6f4c.2ecff",
+        "name": "Set TargetTemperature",
+        "func": "var thermometer = flow.get(\"Thermometer\");\n\nthermometer.TargetTemperature = msg.payload.TargetTemperature || thermometer.TargetTemperature;\n\nif (msg.payload.req !== undefined) {\n    return msg;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 380,
+        "y": 360,
+        "wires": [
+            [
+                "6147b9d.c6bba48",
+                "7947e357.70b65c"
+            ]
+        ]
+    },
+    {
+        "id": "6147b9d.c6bba48",
+        "type": "http response",
+        "z": "92ff6f4c.2ecff",
+        "name": "Redirect /BrewThermometer",
+        "statusCode": "303",
+        "headers": {
+            "location": "/BrewThermometer"
+        },
+        "x": 680,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "d7c5fedd.b7af2",
+        "type": "inject",
+        "z": "92ff6f4c.2ecff",
+        "name": "Initialise Thermometer",
+        "topic": "",
+        "payload": "{\"CurrentTemperature\":0,\"TargetTemperature\":15,\"CurrentHeatingCoolingState\":0,\"TargetHeatingCoolingState\":0,\"TimeStamp\":\"\",\"Config\":{\"one_wire_pin\":12,\"sample_frequency_seconds\":5}}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "0",
+        "x": 140,
+        "y": 20,
+        "wires": [
+            [
+                "46968d51.93ffc4"
+            ]
+        ]
+    },
+    {
+        "id": "46968d51.93ffc4",
+        "type": "change",
+        "z": "92ff6f4c.2ecff",
+        "name": "Initialise Thermometer",
+        "rules": [
+            {
+                "t": "set",
+                "p": "Thermometer",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 380,
+        "y": 20,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "bc949ce0.27cbd",
+        "type": "http in",
+        "z": "92ff6f4c.2ecff",
+        "name": "POST TargetHeatingCoolingState",
+        "url": "/BrewThermometer/TargetHeatingCoolingState",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 130,
+        "y": 400,
+        "wires": [
+            [
+                "236fc7f2.a6e548"
+            ]
+        ]
+    },
+    {
+        "id": "236fc7f2.a6e548",
+        "type": "function",
+        "z": "92ff6f4c.2ecff",
+        "name": "Set TargetHeatingCoolingState",
+        "func": "var thermometer = flow.get(\"Thermometer\");\n\nthermometer.TargetHeatingCoolingState = msg.payload.TargetHeatingCoolingState !== undefined ? msg.payload.TargetHeatingCoolingState : thermometer.TargetHeatingCoolingState;\n\nif (msg.payload.req !== undefined) {\n    return msg;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 410,
+        "y": 400,
+        "wires": [
+            [
+                "b8f5004e.63342",
+                "7947e357.70b65c"
+            ]
+        ]
+    },
+    {
+        "id": "b8f5004e.63342",
+        "type": "http response",
+        "z": "92ff6f4c.2ecff",
+        "name": "Redirect /BrewThermometer",
+        "statusCode": "303",
+        "headers": {
+            "location": "/BrewThermometer"
+        },
+        "x": 680,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "d44e1316.38f9d",
+        "type": "template",
+        "z": "92ff6f4c.2ecff",
+        "name": "CurrentHeatingCoolingState",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "{\n    \"CurrentHeatingCoolingState\" : {{ flow.Thermometer.CurrentHeatingCoolingState }}\n}",
+        "x": 540,
+        "y": 200,
+        "wires": [
+            [
+                "da0760d8.db3c2"
+            ]
+        ]
+    },
+    {
+        "id": "6213893a.6d5768",
+        "type": "http in",
+        "z": "92ff6f4c.2ecff",
+        "name": "GET CurrentHeatingCoolingState",
+        "url": "/BrewThermometer/CurrentHeatingCoolingState",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 130,
+        "y": 200,
+        "wires": [
+            [
+                "d44e1316.38f9d"
+            ]
+        ]
+    },
+    {
+        "id": "da0760d8.db3c2",
+        "type": "http response",
+        "z": "92ff6f4c.2ecff",
+        "name": "",
+        "statusCode": "200",
+        "headers": {
+            "content-type": "application/json"
+        },
+        "x": 740,
+        "y": 200,
+        "wires": []
+    }
+]
