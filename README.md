@@ -83,7 +83,7 @@ It shouldn't go wrong, but if it does, play around with the baud rate until you 
   - You need **-d 1** as otherwise it doesn't wait for MicroPython to exit interactive mode
 
 # Wiring Diagram for the components
-I couldn't find a Wemos D1 Mini on [TinkerCad](), so I've drawn one to give you an idea of what you're connecting.
+I couldn't find a Wemos D1 Mini on [TinkerCad](https://www.tinkercad.com/), so I've drawn one to give you an idea of what you're connecting.
 I'll have to do another drawing once I've done the relays, so for now, I'd suggest hooking this up on a breadboard to test it.
 [Wiring Diagram](./wiring-diagram.jpg?raw=true)
 
