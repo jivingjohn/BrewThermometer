@@ -82,6 +82,11 @@ It shouldn't go wrong, but if it does, play around with the baud rate until you 
   - You need the **-b** to ensure it doesn't write too quickly
   - You need **-d 1** as otherwise it doesn't wait for MicroPython to exit interactive mode
 
+# Wiring Diagram for the components
+I couldn't find a Wemos D1 Mini on [TinkerCad](https://www.tinkercad.com/), so I've drawn one to give you an idea of what you're connecting.
+I'll have to do another drawing once I've done the relays, so for now, I'd suggest hooking this up on a breadboard to test it.
+[Wiring Diagram](./wiring-diagram.JPG)
+
 # Adding an app to work with the temperature sensor
 I've used Node-Red to create a simple web-app that you can host to control and display the temperature.
 You can host it locally, or in the cloud, but it the Wemos will need to be able to communicate with it.
