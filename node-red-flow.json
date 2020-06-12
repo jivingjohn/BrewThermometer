@@ -1,5 +1,25 @@
 [
     {
+        "id": "d7c5fedd.b7af2",
+        "type": "inject",
+        "z": "92ff6f4c.2ecff",
+        "name": "Initialise Thermometer",
+        "topic": "",
+        "payload": "{\"CurrentTemperature\":0,\"TargetTemperature\":15,\"CurrentHeatingCoolingState\":0,\"TargetHeatingCoolingState\":0,\"TimeStamp\":\"\",\"Config\":{\"one_wire_pin\":12,\"sample_frequency_seconds\":5}}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "0",
+        "x": 140,
+        "y": 20,
+        "wires": [
+            [
+                "46968d51.93ffc4"
+            ]
+        ]
+    },
+    {
         "id": "3515d921.86cf86",
         "type": "http in",
         "z": "92ff6f4c.2ecff",
@@ -208,7 +228,7 @@
         "type": "function",
         "z": "92ff6f4c.2ecff",
         "name": "Set TargetTemperature",
-        "func": "var thermometer = flow.get(\"Thermometer\");\n\nthermometer.TargetTemperature = msg.payload.TargetTemperature || thermometer.TargetTemperature;\n\nif (msg.payload.req !== undefined) {\n    return msg;\n}",
+        "func": "var thermometer = flow.get(\"Thermometer\");\n\nthermometer.TargetTemperature = msg.payload.TargetTemperature || thermometer.TargetTemperature;\n\nif (msg.req !== undefined) {\n    return msg;\n}",
         "outputs": 1,
         "noerr": 0,
         "x": 380,
@@ -232,26 +252,6 @@
         "x": 680,
         "y": 360,
         "wires": []
-    },
-    {
-        "id": "d7c5fedd.b7af2",
-        "type": "inject",
-        "z": "92ff6f4c.2ecff",
-        "name": "Initialise Thermometer",
-        "topic": "",
-        "payload": "{\"CurrentTemperature\":0,\"TargetTemperature\":15,\"CurrentHeatingCoolingState\":0,\"TargetHeatingCoolingState\":0,\"TimeStamp\":\"\",\"Config\":{\"one_wire_pin\":12,\"sample_frequency_seconds\":5}}",
-        "payloadType": "json",
-        "repeat": "",
-        "crontab": "",
-        "once": true,
-        "onceDelay": "0",
-        "x": 140,
-        "y": 20,
-        "wires": [
-            [
-                "46968d51.93ffc4"
-            ]
-        ]
     },
     {
         "id": "46968d51.93ffc4",
@@ -300,7 +300,7 @@
         "type": "function",
         "z": "92ff6f4c.2ecff",
         "name": "Set TargetHeatingCoolingState",
-        "func": "var thermometer = flow.get(\"Thermometer\");\n\nthermometer.TargetHeatingCoolingState = msg.payload.TargetHeatingCoolingState !== undefined ? msg.payload.TargetHeatingCoolingState : thermometer.TargetHeatingCoolingState;\n\nif (msg.payload.req !== undefined) {\n    return msg;\n}",
+        "func": "var thermometer = flow.get(\"Thermometer\");\n\nthermometer.TargetHeatingCoolingState = msg.payload.TargetHeatingCoolingState !== undefined ? msg.payload.TargetHeatingCoolingState : thermometer.TargetHeatingCoolingState;\n\nif (msg.req !== undefined) {\n    return msg;\n}",
         "outputs": 1,
         "noerr": 0,
         "x": 410,
