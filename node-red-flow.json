@@ -208,7 +208,7 @@
         "type": "function",
         "z": "92ff6f4c.2ecff",
         "name": "Set TargetTemperature",
-        "func": "var thermometer = flow.get(\"Thermometer\");\n\nthermometer.TargetTemperature = parseInt(msg.payload.TargetTemperature) || thermometer.TargetTemperature;\n\nif (msg.req !== undefined) {\n    return msg;\n}",
+        "func": "var thermometer = flow.get(\"Thermometer\");\n\nthermometer.TargetTemperature = parseFloat(msg.payload.TargetTemperature) || thermometer.TargetTemperature;\n\nif (msg.req !== undefined) {\n    return msg;\n}",
         "outputs": 1,
         "noerr": 0,
         "x": 420,
