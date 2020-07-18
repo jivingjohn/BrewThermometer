@@ -1,25 +1,5 @@
 [
     {
-        "id": "d7c5fedd.b7af2",
-        "type": "inject",
-        "z": "92ff6f4c.2ecff",
-        "name": "Initialise Thermometer",
-        "topic": "",
-        "payload": "{\"CurrentTemperature\":0,\"TargetTemperature\":15,\"CurrentHeatingCoolingState\":0,\"TargetHeatingCoolingState\":0,\"TimeStamp\":\"\",\"Config\":{\"one_wire_pin\":12,\"sample_frequency_seconds\":5}}",
-        "payloadType": "json",
-        "repeat": "",
-        "crontab": "",
-        "once": true,
-        "onceDelay": "0",
-        "x": 140,
-        "y": 20,
-        "wires": [
-            [
-                "46968d51.93ffc4"
-            ]
-        ]
-    },
-    {
         "id": "3515d921.86cf86",
         "type": "http in",
         "z": "92ff6f4c.2ecff",
@@ -28,8 +8,8 @@
         "method": "post",
         "upload": false,
         "swaggerDoc": "",
-        "x": 70,
-        "y": 280,
+        "x": 110,
+        "y": 260,
         "wires": [
             [
                 "ca996f3.4ed459"
@@ -45,8 +25,8 @@
         "headers": {
             "content-type": "application/json"
         },
-        "x": 740,
-        "y": 280,
+        "x": 780,
+        "y": 260,
         "wires": []
     },
     {
@@ -57,8 +37,8 @@
         "func": "var thermometer = flow.get(\"Thermometer\");\n\nthermometer.config.one_wire_pin = msg.payload.one_wire_pin || thermometer.Config.one_wire_pin;\nthermometer.Config.sample_frequency_seconds = msg.payload.sample_frequency_seconds || thermometer.Config.sample_frequency_seconds;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 350,
-        "y": 280,
+        "x": 390,
+        "y": 260,
         "wires": [
             [
                 "a059dc14.624df"
@@ -74,8 +54,8 @@
         "method": "get",
         "upload": false,
         "swaggerDoc": "",
-        "x": 70,
-        "y": 160,
+        "x": 110,
+        "y": 100,
         "wires": [
             [
                 "3160cbd5.82fd84"
@@ -91,9 +71,9 @@
         "fieldType": "msg",
         "format": "handlebars",
         "syntax": "mustache",
-        "template": "{\n    \"one_wire_pin\" : {{ flow.Thermometer.Config.one_wire_pin }},\n    \"sample_frequency_seconds\" : {{ flow.Thermometer.Config.sample_frequency_seconds }}\n}",
-        "x": 610,
-        "y": 160,
+        "template": "{\n    \"one_wire_pin\" : {{ flow.Thermometer.Config.one_wire_pin }},\n    \"sample_frequency_seconds\" : {{ flow.Thermometer.Config.sample_frequency_seconds }},\n        \"relay_pins\": {\n            \"Cooling\": 5,\n            \"Heating\": 4,\n            \"R3\": 0,\n            \"R4\": 2\n        }\n}",
+        "x": 650,
+        "y": 100,
         "wires": [
             [
                 "9d6cc4dd.0d9a48"
@@ -109,8 +89,8 @@
         "headers": {
             "content-type": "application/json"
         },
-        "x": 740,
-        "y": 160,
+        "x": 780,
+        "y": 100,
         "wires": []
     },
     {
@@ -122,8 +102,8 @@
         "method": "get",
         "upload": false,
         "swaggerDoc": "",
-        "x": 100,
-        "y": 120,
+        "x": 140,
+        "y": 60,
         "wires": [
             [
                 "31e4d97f.e4a2e6"
@@ -139,9 +119,9 @@
         "fieldType": "msg",
         "format": "handlebars",
         "syntax": "mustache",
-        "template": "<html>\n    <head><title>Brew Thermometer</title></head>\n    <body>\n        <h1>Current Temperature {{ flow.Thermometer.CurrentTemperature }} degrees Celcius</h1>\n        <h2>Current Heating Cooling State {{ flow.Thermometer.CurrentHeatingCoolingState }}</h2>\n        <h3>Target Temperature {{ flow.Thermometer.TargetTemperature }}</h3>\n        <h3>Reading Number {{ flow.Thermometer.ReadingNumber }}</h3>\n        <h5>Reading taken on {{ flow.Thermometer.TimeStamp }}</h5>\n        <hr />\n        \n        <div>\n            <form method=\"post\" action=\"/BrewThermometer/TargetTemperature\">\n                <label for=\"TargetTemperature\">Target Temperature</label>\n                <input name=\"TargetTemperature\" id=\"TargetTemperature\" type=\"number\" min=\"15\" max=\"30\" step=\"0.1\" value=\"{{ flow.Thermometer.TargetTemperature }}\" />\n                <input type=\"submit\" />\n            </form>\n        </div>\n        <div>\n            <form method=\"post\" action=\"/BrewThermometer/TargetHeatingCoolingState\">\n                <label for=\"TargetHeatingCoolingState\">Target Heating Cooling State</label>\n                <input name=\"TargetHeatingCoolingState\" id=\"TargetHeatingCoolingState\" type=\"number\" min=\"0\" max=\"1\" value=\"{{ flow.Thermometer.TargetHeatingCoolingState }}\" />\n                <input type=\"submit\" />\n            </form>\n        </div>\n    </body>\n</html>",
-        "x": 590,
-        "y": 120,
+        "template": "<html>\n    <head><title>Brew Thermometer</title></head>\n    <body>\n        <h1>Current Temperature {{ flow.Thermometer.CurrentTemperature }} degrees Celcius</h1>\n        <h2>Current Heating Cooling State {{ flow.Thermometer.CurrentHeatingCoolingState }}</h2>\n        <h3>Target Temperature {{ flow.Thermometer.TargetTemperature }}</h3>\n        <h5>Reading taken on {{ flow.Thermometer.TimeStamp }}</h5>\n        <hr />\n        \n        <div>\n            <form method=\"post\" action=\"/BrewThermometer/TargetTemperature\">\n                <label for=\"TargetTemperature\">Target Temperature</label>\n                <input name=\"TargetTemperature\" id=\"TargetTemperature\" type=\"number\" min=\"15\" max=\"30\" step=\"0.5\" value=\"{{ flow.Thermometer.TargetTemperature }}\" />\n                <input type=\"submit\" />\n            </form>\n        </div>\n        <div>\n            <form method=\"post\" action=\"/BrewThermometer/TargetHeatingCoolingState\">\n                <label for=\"TargetHeatingCoolingState\">Target Heating Cooling State</label>\n                <input name=\"TargetHeatingCoolingState\" id=\"TargetHeatingCoolingState\" type=\"number\" min=\"0\" max=\"1\" value=\"{{ flow.Thermometer.TargetHeatingCoolingState }}\" />\n                <input type=\"submit\" />\n            </form>\n        </div>\n    </body>\n</html>",
+        "x": 630,
+        "y": 60,
         "wires": [
             [
                 "4129bfa1.1dca5"
@@ -155,8 +135,8 @@
         "name": "",
         "statusCode": "200",
         "headers": {},
-        "x": 740,
-        "y": 120,
+        "x": 780,
+        "y": 60,
         "wires": []
     },
     {
@@ -168,8 +148,8 @@
         "method": "post",
         "upload": false,
         "swaggerDoc": "",
-        "x": 110,
-        "y": 320,
+        "x": 150,
+        "y": 300,
         "wires": [
             [
                 "c0492617.702c18"
@@ -181,11 +161,11 @@
         "type": "function",
         "z": "92ff6f4c.2ecff",
         "name": "Set CurrentTemperature",
-        "func": "var thermometer = flow.get(\"Thermometer\");\n\nthermometer.CurrentTemperature = msg.payload.CurrentTemperature || thermometer.CurrentTemperature;\nthermometer.ReadingNumber = msg.payload.ReadingNumber || thermometer.ReadingNumber;\nthermometer.TimeStamp = new Date()\n\nreturn msg;",
+        "func": "var thermometer = flow.get(\"Thermometer\");\n\nthermometer.CurrentTemperature = msg.payload.CurrentTemperature || thermometer.CurrentTemperature;\nthermometer.TimeStamp = new Date()\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 390,
-        "y": 320,
+        "x": 430,
+        "y": 300,
         "wires": [
             [
                 "9542d173.36191",
@@ -202,8 +182,8 @@
         "headers": {
             "content-type": "application/json"
         },
-        "x": 740,
-        "y": 320,
+        "x": 780,
+        "y": 300,
         "wires": []
     },
     {
@@ -215,8 +195,8 @@
         "method": "post",
         "upload": false,
         "swaggerDoc": "",
-        "x": 110,
-        "y": 360,
+        "x": 150,
+        "y": 340,
         "wires": [
             [
                 "15bd6803.e97588"
@@ -228,11 +208,11 @@
         "type": "function",
         "z": "92ff6f4c.2ecff",
         "name": "Set TargetTemperature",
-        "func": "var thermometer = flow.get(\"Thermometer\");\n\nthermometer.TargetTemperature = msg.payload.TargetTemperature || thermometer.TargetTemperature;\n\nif (msg.req !== undefined) {\n    return msg;\n}",
+        "func": "var thermometer = flow.get(\"Thermometer\");\n\nthermometer.TargetTemperature = parseInt(msg.payload.TargetTemperature) || thermometer.TargetTemperature;\n\nif (msg.req !== undefined) {\n    return msg;\n}",
         "outputs": 1,
         "noerr": 0,
-        "x": 380,
-        "y": 360,
+        "x": 420,
+        "y": 340,
         "wires": [
             [
                 "6147b9d.c6bba48",
@@ -249,9 +229,29 @@
         "headers": {
             "location": "/BrewThermometer"
         },
-        "x": 680,
-        "y": 360,
+        "x": 720,
+        "y": 340,
         "wires": []
+    },
+    {
+        "id": "d7c5fedd.b7af2",
+        "type": "inject",
+        "z": "92ff6f4c.2ecff",
+        "name": "Initialise Thermometer",
+        "topic": "",
+        "payload": "{\"CurrentTemperature\":0,\"TargetTemperature\":15,\"CurrentHeatingCoolingState\":0,\"TargetHeatingCoolingState\":0,\"TimeStamp\":\"\",\"Config\":{\"one_wire_pin\":12,\"sample_frequency_seconds\":5,\"relay_pins\":{\"Cooling\":5,\"Heating\":4,\"R3\":0,\"R4\":2}}}",
+        "payloadType": "json",
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "0",
+        "x": 140,
+        "y": 20,
+        "wires": [
+            [
+                "46968d51.93ffc4"
+            ]
+        ]
     },
     {
         "id": "46968d51.93ffc4",
@@ -287,8 +287,8 @@
         "method": "post",
         "upload": false,
         "swaggerDoc": "",
-        "x": 130,
-        "y": 400,
+        "x": 170,
+        "y": 380,
         "wires": [
             [
                 "236fc7f2.a6e548"
@@ -300,11 +300,11 @@
         "type": "function",
         "z": "92ff6f4c.2ecff",
         "name": "Set TargetHeatingCoolingState",
-        "func": "var thermometer = flow.get(\"Thermometer\");\n\nthermometer.TargetHeatingCoolingState = msg.payload.TargetHeatingCoolingState !== undefined ? msg.payload.TargetHeatingCoolingState : thermometer.TargetHeatingCoolingState;\n\nif (msg.req !== undefined) {\n    return msg;\n}",
+        "func": "var thermometer = flow.get(\"Thermometer\");\n\nthermometer.TargetHeatingCoolingState = msg.payload.TargetHeatingCoolingState !== undefined ? parseInt(msg.payload.TargetHeatingCoolingState) : thermometer.TargetHeatingCoolingState;\n\nif (msg.req !== undefined) {\n    return msg;\n}",
         "outputs": 1,
         "noerr": 0,
-        "x": 410,
-        "y": 400,
+        "x": 450,
+        "y": 380,
         "wires": [
             [
                 "b8f5004e.63342",
@@ -321,9 +321,71 @@
         "headers": {
             "location": "/BrewThermometer"
         },
-        "x": 680,
-        "y": 400,
+        "x": 720,
+        "y": 380,
         "wires": []
+    },
+    {
+        "id": "7947e357.70b65c",
+        "type": "function",
+        "z": "92ff6f4c.2ecff",
+        "name": "CurrentHeatingCoolingState",
+        "func": "var thermometer = flow.get(\"Thermometer\");\n\nvar currentTemperature = Math.round(thermometer.CurrentTemperature * 2) / 2\n\nvar temperatureDiff = currentTemperature - thermometer.TargetTemperature;\nif (temperatureDiff === 0 || thermometer.TargetHeatingCoolingState === 0) {\n    // we're at temperature\n    // or thermometer is turned off\n    thermometer.CurrentHeatingCoolingState = 0\n} else if (temperatureDiff > 0) {\n        // it's too cool\n        thermometer.CurrentHeatingCoolingState = 2\n} else if (temperatureDiff < 0) {\n        // it's too hot\n        thermometer.CurrentHeatingCoolingState = 1\n}\n\nreturn { \n    payload : {\n        \"CurrentHeatingCoolingState\" : thermometer.CurrentHeatingCoolingState,\n        \"TargetHeatingCoolingState\" : thermometer.TargetHeatingCoolingState,\n        \"CurrentTemperature\" : thermometer.CurrentTemperature,\n        \"TargetTemperature\" : thermometer.TargetTemperature\n    } \n};",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 720,
+        "y": 420,
+        "wires": [
+            [
+                "bce58f3a.d3788"
+            ]
+        ]
+    },
+    {
+        "id": "bce58f3a.d3788",
+        "type": "homekit-service",
+        "z": "92ff6f4c.2ecff",
+        "isParent": true,
+        "bridge": "e81761b8.544e8",
+        "parentService": "",
+        "name": "Brew Temperature Controller",
+        "serviceName": "Thermostat",
+        "topic": "",
+        "filter": false,
+        "manufacturer": "John Saunders",
+        "model": "Raspberry Pi",
+        "serialNo": "1",
+        "cameraConfigVideoProcessor": "ffmpeg",
+        "cameraConfigSource": "",
+        "cameraConfigStillImageSource": "",
+        "cameraConfigMaxStreams": 2,
+        "cameraConfigMaxWidth": 1280,
+        "cameraConfigMaxHeight": 720,
+        "cameraConfigMaxFPS": 10,
+        "cameraConfigMaxBitrate": 300,
+        "cameraConfigVideoCodec": "libx264",
+        "cameraConfigAudioCodec": "libfdk_aac",
+        "cameraConfigAudio": false,
+        "cameraConfigPacketSize": 1316,
+        "cameraConfigVerticalFlip": false,
+        "cameraConfigHorizontalFlip": false,
+        "cameraConfigMapVideo": "0:0",
+        "cameraConfigMapAudio": "0:1",
+        "cameraConfigVideoFilter": "scale=1280:720",
+        "cameraConfigAdditionalCommandLine": "-tune zerolatency",
+        "cameraConfigDebug": false,
+        "cameraConfigSnapshotOutput": "disabled",
+        "cameraConfigInterfaceName": "",
+        "characteristicProperties": "{\n    \"TargetHeatingCoolingState\": {\n        \"validValues\":[ 0, 1 ]\n    },\n    \"CurrentHeatingCoolingState\": {\n        \"validValues\":[ 0, 1, 2 ]\n    },\n    \"TargetTemperature\": {\n         \"minValue\": 15,\n         \"maxValue\": 30\n    }\n}",
+        "x": 160,
+        "y": 420,
+        "wires": [
+            [
+                "15bd6803.e97588",
+                "236fc7f2.a6e548"
+            ],
+            []
+        ]
     },
     {
         "id": "d44e1316.38f9d",
@@ -335,8 +397,8 @@
         "format": "handlebars",
         "syntax": "mustache",
         "template": "{\n    \"CurrentHeatingCoolingState\" : {{ flow.Thermometer.CurrentHeatingCoolingState }}\n}",
-        "x": 540,
-        "y": 200,
+        "x": 580,
+        "y": 140,
         "wires": [
             [
                 "da0760d8.db3c2"
@@ -352,8 +414,8 @@
         "method": "get",
         "upload": false,
         "swaggerDoc": "",
-        "x": 130,
-        "y": 200,
+        "x": 170,
+        "y": 140,
         "wires": [
             [
                 "d44e1316.38f9d"
@@ -369,8 +431,29 @@
         "headers": {
             "content-type": "application/json"
         },
-        "x": 740,
-        "y": 200,
+        "x": 780,
+        "y": 140,
         "wires": []
+    },
+    {
+        "id": "e81761b8.544e8",
+        "type": "homekit-bridge",
+        "z": "",
+        "bridgeName": "Raspberry Pi Bridge",
+        "pinCode": "123-45-678",
+        "port": "",
+        "allowInsecureRequest": false,
+        "manufacturer": "John Saunders",
+        "model": "Raspberry Pi",
+        "serialNo": "1",
+        "customMdnsConfig": false,
+        "mdnsMulticast": true,
+        "mdnsInterface": "",
+        "mdnsPort": "",
+        "mdnsIp": "",
+        "mdnsTtl": "",
+        "mdnsLoopback": true,
+        "mdnsReuseAddr": true,
+        "allowMessagePassthrough": false
     }
 ]

@@ -1,5 +1,6 @@
 # Brewers Thermometer #
-import ds18x20, gc, json, machine, network, onewire, os, socket, time, urequests
+import ds18x20, gc, json, network, onewire, os, socket, sys, time, urequests
+from machine import Pin
 
 setup_html = """
     <head><title>Setup Brew Thermometer</title></head>
@@ -24,6 +25,16 @@ setup_complete_html = """
 # WiFI variables
 ap_if = network.WLAN(network.AP_IF) # WiFI access point
 sta_if = network.WLAN(network.STA_IF) # WiFI station
+
+# default relay values
+default_relay_pins = { "Cooling" : 5, "Heating" : 4, "R3" : 0, "R4" : 2 }
+default_relay_values = { "Cooling" : 0, "Heating" : 0, "R3" : 0, "R4" : 0 }
+
+# default current heating cooling state
+default_current_heating_cooling_state = { "CurrentHeatingCoolingState" : 0 }
+
+# default board config
+default_board_config = { "sample_frequency_seconds": 5, "one_wire_pin": 12, "relay_pins" : default_relay_pins }
 
 # host a simple web page that can collect config for us
 # returns config as json formatted string
@@ -91,18 +102,47 @@ def remove_config(configuration_file):
     if configuration_file in files:
         os.remove(configuration_file)
 
-# get the sensor config
-# returns config as a json object
-def get_sensor_config(configuration_url):
+# try and get a json response from a url
+# returns retrieved json object or default value
+def get_request_with_default(request_url, default_value):
     for attempt in range(5):
         try:
-            response = urequests.get(configuration_url)
+            response = urequests.get(request_url)
             response_json = response.json()
+        except Exception as e:
+            print("Error in get request:", e)
         finally:
             gc.collect()
+            return response_json
     else:
-        response_json = { "sample_frequency_seconds": 5, "one_wire_pin": 12 } # defaults
+        response_json = default_value
     return response_json
+
+# set up the relays
+def setup_relays(relay_pins):
+    return_relays = {}
+    for pin in relay_pins.keys():
+        return_relays[pin] = Pin(relay_pins[pin], Pin.OUT)
+        return_relays[pin].value(1)
+    return return_relays
+
+# set the relay states
+def set_relay_states(relays, CurrentHeatingCoolingState):
+    current_state = CurrentHeatingCoolingState["CurrentHeatingCoolingState"]
+    # relay state: 0 is on and 1 is off
+    # CurrentHeatingCoolingState: 0 is off, 1 is heat, 2 is cool
+    if (current_state == 1):
+        # we want to heat things up
+        relays["Cooling"].value(1)
+        relays["Heating"].value(0)
+    elif (current_state == 2):
+        # we want to cool things down
+        relays["Cooling"].value(0)
+        relays["Heating"].value(1)
+    else:
+        # turn both relays off
+        relays["Cooling"].value(1)
+        relays["Heating"].value(1)
 
 # Get the config
 config = get_config("config.json", setup_html, setup_complete_html)
@@ -114,22 +154,24 @@ connect_to_wifi(config["essid"], config["password"])
 base_url = "http://%s:1880/BrewThermometer" % config["ip_address"]
 config_url = "%s/Config" % base_url
 current_temperature_url = "%s/CurrentTemperature" % base_url
+current_heating_cooling_state_url = "%s/CurrentHeatingCoolingState" % base_url
 
-# get the sensor config
-sensor_config = get_sensor_config(config_url)
+# get the board config
+setup_config = get_request_with_default(config_url, default_board_config)
 
 # set up the DS18b20
-ds_pin = machine.Pin(sensor_config["one_wire_pin"]) # microPy 12 is pin 6 on Wemos D1 mini
+ds_pin = Pin(setup_config["one_wire_pin"]) # microPy 12 is pin 6 on Wemos D1 mini
 ds_sensor = ds18x20.DS18X20(onewire.OneWire(ds_pin))
 sensors = ds_sensor.scan() # may be more than one sensor
 gc.collect()
 
+# setup the relays
+relay_control = setup_relays(setup_config["relay_pins"])
+print(relay_control)
 # read the temperature and report
-reading_number = 1 # used for testing to see if it's still going
+# control the relays
 while True:
     current_temp = 0 # temperature reading
-    if reading_number > 9999:
-        reading_number = 1
     ds_sensor.convert_temp() # initialise for reading
     time.sleep_ms(750) # takes a while to initialise
     for sensor in sensors:
@@ -141,9 +183,15 @@ while True:
     try:
         # post the current temperature
         response = urequests.post(current_temperature_url, json = {
-            "CurrentTemperature" : current_temp,
-            "ReadingNumber" : reading_number })
-        reading_number += 1
+            "CurrentTemperature" : current_temp
+        })
+        # get the relay states
+        response = get_request_with_default(current_heating_cooling_state_url, default_current_heating_cooling_state)
+        print(response)
+        set_relay_states(relay_control, response)
+    except Exception as e:
+        print("Error in main while loop:", e)
     finally:
+        print("it's working")
         gc.collect()
-        time.sleep(sensor_config["sample_frequency_seconds"]) # delay time
+        time.sleep(setup_config["sample_frequency_seconds"]) # delay time
