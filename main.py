@@ -172,11 +172,15 @@ print(relay_control)
 # control the relays
 while True:
     current_temp = 0 # temperature reading
-    ds_sensor.convert_temp() # initialise for reading
-    time.sleep_ms(750) # takes a while to initialise
-    for sensor in sensors:
-        current_temp += ds_sensor.read_temp(sensor) # read the sensor
-    current_temp = current_temp / len(sensors)
+    if len(sensors):
+        ds_sensor.convert_temp() # initialise for reading
+        time.sleep_ms(750) # takes a while to initialise
+        for sensor in sensors:
+            current_temp += ds_sensor.read_temp(sensor) # read the sensor
+        current_temp = current_temp / len(sensors)
+    else:
+        current_temp = 8008
+        print("Error, no ds18b20 sensors were detected")
 
     connect_to_wifi(config["essid"], config["password"]) # connect to WiFI
 
@@ -187,11 +191,9 @@ while True:
         })
         # get the relay states
         response = get_request_with_default(current_heating_cooling_state_url, default_current_heating_cooling_state)
-        print(response)
         set_relay_states(relay_control, response)
     except Exception as e:
         print("Error in main while loop:", e)
     finally:
-        print("it's working")
         gc.collect()
         time.sleep(setup_config["sample_frequency_seconds"]) # delay time

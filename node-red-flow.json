@@ -1,5 +1,12 @@
 [
     {
+        "id": "92ff6f4c.2ecff",
+        "type": "tab",
+        "label": "Brew Thermometer",
+        "disabled": false,
+        "info": ""
+    },
+    {
         "id": "3515d921.86cf86",
         "type": "http in",
         "z": "92ff6f4c.2ecff",
@@ -161,7 +168,7 @@
         "type": "function",
         "z": "92ff6f4c.2ecff",
         "name": "Set CurrentTemperature",
-        "func": "var thermometer = flow.get(\"Thermometer\");\n\nthermometer.CurrentTemperature = msg.payload.CurrentTemperature || thermometer.CurrentTemperature;\nthermometer.TimeStamp = new Date()\n\nreturn msg;",
+        "func": "var thermometer = flow.get(\"Thermometer\");\nvar newCurrentTemperature = msg.payload.CurrentTemperature || thermometer.CurrentTemperature;\n\nthermometer.TimeStamp = new Date()\n\n// only want to return a message if the temp has changed\nif (newCurrentTemperature != thermometer.CurrentTemperature) {\n    thermometer.CurrentTemperature = newCurrentTemperature;\n    return msg;   \n}",
         "outputs": 1,
         "noerr": 0,
         "x": 430,
@@ -330,7 +337,7 @@
         "type": "function",
         "z": "92ff6f4c.2ecff",
         "name": "CurrentHeatingCoolingState",
-        "func": "var thermometer = flow.get(\"Thermometer\");\n\nvar currentTemperature = Math.round(thermometer.CurrentTemperature * 2) / 2\n\nvar temperatureDiff = currentTemperature - thermometer.TargetTemperature;\nif (temperatureDiff === 0 || thermometer.TargetHeatingCoolingState === 0) {\n    // we're at temperature\n    // or thermometer is turned off\n    thermometer.CurrentHeatingCoolingState = 0\n} else if (temperatureDiff > 0) {\n        // it's too cool\n        thermometer.CurrentHeatingCoolingState = 2\n} else if (temperatureDiff < 0) {\n        // it's too hot\n        thermometer.CurrentHeatingCoolingState = 1\n}\n\nreturn { \n    payload : {\n        \"CurrentHeatingCoolingState\" : thermometer.CurrentHeatingCoolingState,\n        \"TargetHeatingCoolingState\" : thermometer.TargetHeatingCoolingState,\n        \"CurrentTemperature\" : thermometer.CurrentTemperature,\n        \"TargetTemperature\" : thermometer.TargetTemperature\n    } \n};",
+        "func": "var thermometer = flow.get(\"Thermometer\");\n\nvar currentTemperature = Math.round(thermometer.CurrentTemperature * 2) / 2\n\nvar temperatureDiff = currentTemperature - thermometer.TargetTemperature;\nif (temperatureDiff === 0 || thermometer.TargetHeatingCoolingState === 0) {\n    // we're at temperature\n    // or thermometer is turned off\n    thermometer.CurrentHeatingCoolingState = 0\n} else if (temperatureDiff > 0) {\n        // it's too hot\n        thermometer.CurrentHeatingCoolingState = 2\n} else if (temperatureDiff < 0) {\n        // it's too cool\n        thermometer.CurrentHeatingCoolingState = 1\n}\n\nreturn { \n    payload : {\n        \"CurrentHeatingCoolingState\" : thermometer.CurrentHeatingCoolingState,\n        \"TargetHeatingCoolingState\" : thermometer.TargetHeatingCoolingState,\n        \"CurrentTemperature\" : thermometer.CurrentTemperature,\n        \"TargetTemperature\" : thermometer.TargetTemperature\n    } \n};",
         "outputs": 1,
         "noerr": 0,
         "x": 720,
@@ -346,7 +353,7 @@
         "type": "homekit-service",
         "z": "92ff6f4c.2ecff",
         "isParent": true,
-        "bridge": "e81761b8.544e8",
+        "bridge": "65a043b3.f2d22c",
         "parentService": "",
         "name": "Brew Temperature Controller",
         "serviceName": "Thermostat",
@@ -436,10 +443,10 @@
         "wires": []
     },
     {
-        "id": "e81761b8.544e8",
+        "id": "65a043b3.f2d22c",
         "type": "homekit-bridge",
         "z": "",
-        "bridgeName": "Raspberry Pi Bridge",
+        "bridgeName": "Raspberry Pi",
         "pinCode": "123-45-678",
         "port": "",
         "allowInsecureRequest": false,
@@ -454,6 +461,6 @@
         "mdnsTtl": "",
         "mdnsLoopback": true,
         "mdnsReuseAddr": true,
-        "allowMessagePassthrough": false
+        "allowMessagePassthrough": true
     }
 ]
